@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minesweeper - Sprint 1</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body onload="onInit()">
+  <h1>Minesweeper</h1>
+
+  <div class="top-bar">
+    <div class="controls">
+      <button onclick="setLevel('beginner')">Beginner 4×4 (2)</button>
+      <button onclick="setLevel('medium')">Medium 8×8 (14)</button>
+      <button onclick="setLevel('expert')">Expert 12×12 (32)</button>
+    </div>
+
+    <div class="status">
+      <span>Flags: <span id="flagsCount">0</span></span>
+      <span>Time: <span id="time">0</span>s</span>
+      <button id="smileyBtn" onclick="onRestart()">😃</button>
+    </div>
+  </div>
+
+  <table class="board" oncontextmenu="return false;"></table>
+
+  <script src="js/config.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
