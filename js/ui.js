@@ -25,6 +25,8 @@ function onCellMouseDown(ev, i, j) {
   console.log('Mouse down on cell (' + i + ',' + j + '), button: ' + ev.button)
   if (!gGame.isOn) return
   if (ev.button === 0) onCellClicked(i, j) 
+    if (ev.button === 2) onCellMarked(i, j)
+
 }
 
 function onCellClicked(i, j) {
@@ -58,4 +60,24 @@ function getCellEl(i, j) {
 
 function updateStatusBar() {
   document.getElementById('flagsCount').textContent = gGame.markedCount
+}
+
+
+function onCellMarked(i, j) {
+  var cell = gBoard[i][j]
+  if (cell.isRevealed) return 
+
+  cell.isMarked = !cell.isMarked
+  gGame.markedCount += cell.isMarked ? 1 : -1
+
+  var elCell = getCellEl(i, j)
+  if (cell.isMarked) {
+    elCell.textContent = '🚩'
+    elCell.classList.add('flag')
+  } else {
+    elCell.textContent = ''
+    elCell.classList.remove('flag')
+  }
+
+  updateStatusBar()
 }
