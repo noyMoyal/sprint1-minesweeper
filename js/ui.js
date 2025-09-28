@@ -2,7 +2,6 @@
 
 console.log('ui.js loaded')
 
-// Draw the board to the HTML table
 function renderBoard(board) {
   console.log('Rendering board to HTML')
   var strHTML = ''
@@ -24,48 +23,16 @@ function renderBoard(board) {
 function onCellMouseDown(ev, i, j) {
   console.log('Mouse down on cell (' + i + ',' + j + '), button: ' + ev.button)
   if (!gGame.isOn) return
-  if (ev.button === 0) onCellClicked(i, j) 
-    if (ev.button === 2) onCellMarked(i, j)
-
+  if (ev.button === 0) onCellClicked(i, j)  // שמאלי – הפונקציה מוגדרת ב-main.js
+  if (ev.button === 2) onCellMarked(i, j)   // ימני – דגל
 }
 
-function onCellClicked(i, j) {
-  console.log('Left-click cell (' + i + ',' + j + ')')
-  var cell = gBoard[i][j]
-  if (cell.isRevealed) return
-
-  cell.isRevealed = true
-  gGame.revealedCount++
-
-  var elCell = getCellEl(i, j)
-  elCell.classList.add('revealed')
-
-  if (cell.isMine) {
-    elCell.textContent = '💣'
-    console.log('BOOM! Mine clicked.')
-    alert('Boom 💣')
-    gGame.isOn = false
-    return
-  }
-
-  var count = cell.minesAroundCount
-  elCell.textContent = count ? count : ''
-
-  
-}
-
-function getCellEl(i, j) {
-  return document.getElementById('cell-' + i + '-' + j)
-}
-
-function updateStatusBar() {
-  document.getElementById('flagsCount').textContent = gGame.markedCount
-}
-
+// *** אין כאן onCellClicked ***
+// ההגדרה נמצאת ב-main.js כדי למנוע כפילות/דריסה
 
 function onCellMarked(i, j) {
   var cell = gBoard[i][j]
-  if (cell.isRevealed) return 
+  if (cell.isRevealed) return
 
   cell.isMarked = !cell.isMarked
   gGame.markedCount += cell.isMarked ? 1 : -1
@@ -80,4 +47,50 @@ function onCellMarked(i, j) {
   }
 
   updateStatusBar()
+}
+
+
+function expandRevealFirstDegree(ci, cj) {
+  console.log('expandRevealFirstDegree from', ci, cj)
+  for (var i = ci - 1; i <= ci + 1; i++) {
+    if (i < 0 || i >= gBoard.length) continue
+    for (var j = cj - 1; j <= cj + 1; j++) {
+      if (j < 0 || j >= gBoard[0].length) continue
+      if (i === ci && j === cj) continue
+
+      var cell = gBoard[i][j]
+      if (cell.isRevealed || cell.isMarked || cell.isMine) continue
+
+      cell.isRevealed = true
+      gGame.revealedCount++
+
+      var el = getCellEl(i, j)
+      el.classList.add('revealed')
+      var cnt = cell.minesAroundCount
+      el.textContent = cnt ? cnt : ''
+    }
+  }
+}
+
+function checkGameOver() {
+  if (!gGame.isOn) return
+  if (isWin()) {
+    gGame.isOn = false
+    document.getElementById('smileyBtn').textContent = '😎'
+    alert('You win!')
+  }
+}
+
+function isWin() {
+  var total = gBoard.length * gBoard.length
+  var safe = total - gLevel.MINES
+  return gGame.revealedCount === safe
+}
+
+function getCellEl(i, j) {
+  return document.getElementById('cell-' + i + '-' + j)
+}
+
+function updateStatusBar() {
+  document.getElementById('flagsCount').textContent = gGame.markedCount
 }
