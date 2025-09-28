@@ -23,12 +23,12 @@ function renderBoard(board) {
 function onCellMouseDown(ev, i, j) {
   console.log('Mouse down on cell (' + i + ',' + j + '), button: ' + ev.button)
   if (!gGame.isOn) return
-  if (ev.button === 0) onCellClicked(i, j)  // שמאלי – הפונקציה מוגדרת ב-main.js
-  if (ev.button === 2) onCellMarked(i, j)   // ימני – דגל
+  if (ev.button === 0) onCellClicked(i, j)  
+  if (ev.button === 2) onCellMarked(i, j)   
 }
 
-// *** אין כאן onCellClicked ***
-// ההגדרה נמצאת ב-main.js כדי למנוע כפילות/דריסה
+
+
 
 function onCellMarked(i, j) {
   var cell = gBoard[i][j]
