@@ -17,7 +17,7 @@ function newGame() {
   document.getElementById('smileyBtn').textContent = '😃'
 
   gBoard = buildBoard(gLevel.SIZE)
-  renderBoard(gBoard) // שימי לב: אין מוקשים כאן. מפזרים רק בקליק הראשון.
+  renderBoard(gBoard) 
 }
 
 function onRestart() {
