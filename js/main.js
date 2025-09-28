@@ -17,13 +17,7 @@ function newGame() {
   document.getElementById('smileyBtn').textContent = '😃'
 
   gBoard = buildBoard(gLevel.SIZE)
-  placeStaticMines(gBoard)      
-  setMinesNegsCount(gBoard)
-
-  console.log('Board after build:', gBoard)
-  renderBoard(gBoard)
-
-
+  renderBoard(gBoard) // שימי לב: אין מוקשים כאן. מפזרים רק בקליק הראשון.
 }
 
 function onRestart() {
@@ -36,4 +30,51 @@ function setLevel(levelKey) {
   var chosen = gLevels[levelKey]
   gLevel = { SIZE: chosen.SIZE, MINES: chosen.MINES }
   newGame()
+}
+
+
+function onCellClicked(i, j) {
+  console.log('Left-click cell (' + i + ',' + j + ')')
+  if (!gGame.isOn) return
+
+  var cell = gBoard[i][j]
+  if (cell.isRevealed || cell.isMarked) return
+
+
+  if (gGame.isFirstClick) {
+    gGame.isFirstClick = false
+    placeRandomMines(gBoard, gLevel.MINES, i, j)
+    setMinesNegsCount(gBoard)
+  }
+
+
+  cell.isRevealed = true
+  gGame.revealedCount++
+
+  var elCell = getCellEl(i, j)
+  elCell.classList.add('revealed')
+
+
+  if (cell.isMine) {
+    elCell.textContent = '💣'
+    console.log('BOOM! Mine clicked.')
+ 
+    document.getElementById('smileyBtn').textContent = '🤯'
+    gGame.isOn = false
+    alert('Boom 💣')
+    return
+  }
+
+
+  var count = cell.minesAroundCount
+  elCell.textContent = count ? count : ''
+
+
+  if (count === 0) {
+ 
+    expandRevealFirstDegree(i, j)
+  }
+
+ 
+  checkGameOver()
 }
