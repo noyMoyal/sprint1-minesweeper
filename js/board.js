@@ -3,7 +3,6 @@
 console.log('board.js loaded')
 
 function buildBoard(size) {
-  console.log('Building board of size:', size)
   var board = []
   for (var i = 0; i < size; i++) {
     board[i] = []
@@ -21,16 +20,25 @@ function buildBoard(size) {
   return board
 }
 
-
 function placeStaticMines(board) {
-  console.log('Placing static mines')
   if (board[0] && board[0][0]) board[0][0].isMine = true
   if (board[1] && board[1][2]) board[1][2].isMine = true
 }
 
+function placeRandomMines(board, mineCount, safeI, safeJ) {
+  var placed = 0
+  var size = board.length
+  while (placed < mineCount) {
+    var i = Math.floor(Math.random() * size)
+    var j = Math.floor(Math.random() * size)
+    if (i === safeI && j === safeJ) continue
+    if (board[i][j].isMine) continue
+    board[i][j].isMine = true
+    placed++
+  }
+}
 
 function setMinesNegsCount(board) {
-  console.log('Calculating neighbor counts')
   var size = board.length
   for (var i = 0; i < size; i++) {
     for (var j = 0; j < size; j++) {
@@ -49,6 +57,5 @@ function countMineNeighbors(board, ci, cj) {
       if (board[i][j].isMine) count++
     }
   }
-  if (count > 0) console.log('Cell (' + ci + ',' + cj + ') has ' + count + ' mine-neighbors')
   return count
 }

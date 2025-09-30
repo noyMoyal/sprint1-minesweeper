@@ -43,5 +43,5 @@ table.board {
   cursor: default;
 }
 
-.board td.mine { background: #f66; }
-.board td.flag { background: #ffd966; }
+.board td.mine { background: #f66 }
+.board td.flag { background: #ffd966 }
