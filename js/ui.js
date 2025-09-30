@@ -21,8 +21,8 @@ function renderBoard(board) {
 
 function onCellMouseDown(ev, i, j) {
   if (!gGame.isOn) return
-  if (ev.button === 0) onCellClicked(i, j)  
-  if (ev.button === 2) onCellMarked(i, j)   
+  if (ev.button === 0) onCellClicked(i, j)
+  if (ev.button === 2) onCellMarked(i, j)
 }
 
 function onCellMarked(i, j) {
@@ -41,7 +41,9 @@ function onCellMarked(i, j) {
   updateStatusBar()
 }
 
-function expandRevealFirstDegree(ci, cj) {
+
+
+function expandReveal(ci, cj) {
   for (var i = ci - 1; i <= ci + 1; i++) {
     if (i < 0 || i >= gBoard.length) continue
     for (var j = cj - 1; j <= cj + 1; j++) {
@@ -55,6 +57,9 @@ function expandRevealFirstDegree(ci, cj) {
       el.classList.add('revealed')
       var cnt = cell.minesAroundCount
       el.textContent = cnt ? cnt : ''
+      if (cnt === 0) {
+        expandReveal(i, j)
+      }
     }
   }
 }
@@ -64,14 +69,20 @@ function checkGameOver() {
   if (isWin()) {
     gGame.isOn = false
     document.getElementById('smileyBtn').textContent = '😎'
+    stopTimer()
     alert('You win!')
   }
 }
 
 function isWin() {
-  var total = gBoard.length * gBoard.length
-  var safe = total - gLevel.MINES
-  return gGame.revealedCount === safe
+  for (var i = 0; i < gBoard.length; i++) {
+    for (var j = 0; j < gBoard[0].length; j++) {
+      var cell = gBoard[i][j]
+      if (cell.isMine && !cell.isMarked) return false
+      if (!cell.isMine && !cell.isRevealed) return false
+    }
+  }
+  return true
 }
 
 function getCellEl(i, j) {
@@ -80,4 +91,21 @@ function getCellEl(i, j) {
 
 function updateStatusBar() {
   document.getElementById('flagsCount').textContent = gGame.markedCount
+  var t = document.getElementById('time')
+  if (t) t.textContent = gGame.secsPassed
+}
+
+function revealAllMines() {
+  for (var i = 0; i < gBoard.length; i++) {
+    for (var j = 0; j < gBoard[0].length; j++) {
+      var cell = gBoard[i][j]
+      if (cell.isMine) {
+        var el = getCellEl(i, j)
+        if (el) {
+          el.textContent = '💣'
+          el.classList.add('mine')
+        }
+      }
+    }
+  }
 }

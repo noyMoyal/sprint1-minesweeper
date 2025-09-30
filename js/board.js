@@ -31,7 +31,7 @@ function placeRandomMines(board, mineCount, safeI, safeJ) {
   while (placed < mineCount) {
     var i = Math.floor(Math.random() * size)
     var j = Math.floor(Math.random() * size)
-    if (i === safeI && j === safeJ) continue
+    if (Math.abs(i - safeI) <= 1 && Math.abs(j - safeJ) <= 1) continue
     if (board[i][j].isMine) continue
     board[i][j].isMine = true
     placed++

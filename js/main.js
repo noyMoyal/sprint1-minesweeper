@@ -2,6 +2,8 @@
 
 console.log('main.js loaded')
 
+var gTimerInterval = null
+
 function onInit() {
   newGame()
 }
@@ -12,9 +14,14 @@ function newGame() {
   gGame.revealedCount = 0
   gGame.markedCount = 0
   gGame.secsPassed = 0
+  if (gTimerInterval) {
+    clearInterval(gTimerInterval)
+    gTimerInterval = null
+  }
+  document.getElementById('time').textContent = gGame.secsPassed
   document.getElementById('smileyBtn').textContent = '😃'
   gBoard = buildBoard(gLevel.SIZE)
-  renderBoard(gBoard) 
+  renderBoard(gBoard)
 }
 
 function onRestart() {
@@ -35,6 +42,7 @@ function onCellClicked(i, j) {
     gGame.isFirstClick = false
     placeRandomMines(gBoard, gLevel.MINES, i, j)
     setMinesNegsCount(gBoard)
+    startTimer()
   }
   cell.isRevealed = true
   gGame.revealedCount++
@@ -44,13 +52,30 @@ function onCellClicked(i, j) {
     elCell.textContent = '💣'
     document.getElementById('smileyBtn').textContent = '🤯'
     gGame.isOn = false
+    revealAllMines()
+    stopTimer()
     alert('Boom 💣')
     return
   }
   var count = cell.minesAroundCount
   elCell.textContent = count ? count : ''
   if (count === 0) {
-    expandRevealFirstDegree(i, j)
+    expandReveal(i, j)
   }
   checkGameOver()
+}
+
+function startTimer() {
+  if (gTimerInterval) return
+  gTimerInterval = setInterval(function() {
+    gGame.secsPassed++
+    var el = document.getElementById('time')
+    if (el) el.textContent = gGame.secsPassed
+  }, 1000)
+}
+
+function stopTimer() {
+  if (!gTimerInterval) return
+  clearInterval(gTimerInterval)
+  gTimerInterval = null
 }
