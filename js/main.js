@@ -1,81 +1,81 @@
-'use strict'
+"use strict";
 
-console.log('main.js loaded')
+console.log("main.js loaded");
 
-var gTimerInterval = null
-
+var gTimerInterval = null;
+var audio = []
 function onInit() {
-  newGame()
+  newGame();
 }
 
 function newGame() {
-  gGame.isOn = true
-  gGame.isFirstClick = true
-  gGame.revealedCount = 0
-  gGame.markedCount = 0
-  gGame.secsPassed = 0
+  gGame.isOn = true;
+  gGame.isFirstClick = true;
+  gGame.revealedCount = 0;
+  gGame.markedCount = 0;
+  gGame.secsPassed = 0;
   if (gTimerInterval) {
-    clearInterval(gTimerInterval)
-    gTimerInterval = null
+    clearInterval(gTimerInterval);
+    gTimerInterval = null;
   }
-  document.getElementById('time').textContent = gGame.secsPassed
-  document.getElementById('smileyBtn').textContent = '😃'
-  gBoard = buildBoard(gLevel.SIZE)
-  renderBoard(gBoard)
+  document.getElementById("time").textContent = gGame.secsPassed;
+  document.getElementById("smileyBtn").textContent = "😃";
+  gBoard = buildBoard(gLevel.SIZE);
+  renderBoard(gBoard);
 }
 
 function onRestart() {
-  newGame()
+  newGame();
 }
 
 function setLevel(levelKey) {
-  var chosen = gLevels[levelKey]
-  gLevel = { SIZE: chosen.SIZE, MINES: chosen.MINES }
-  newGame()
+  var chosen = gLevels[levelKey];
+  gLevel = { SIZE: chosen.SIZE, MINES: chosen.MINES };
+  newGame();
 }
 
 function onCellClicked(i, j) {
-  if (!gGame.isOn) return
-  var cell = gBoard[i][j]
-  if (cell.isRevealed || cell.isMarked) return
+  if (!gGame.isOn) return;
+  var cell = gBoard[i][j];
+  if (cell.isRevealed || cell.isMarked) return;
   if (gGame.isFirstClick) {
-    gGame.isFirstClick = false
-    placeRandomMines(gBoard, gLevel.MINES, i, j)
-    setMinesNegsCount(gBoard)
-    startTimer()
+    gGame.isFirstClick = false;
+    placeRandomMines(gBoard, gLevel.MINES, i, j);
+    setMinesNegsCount(gBoard);
+    startTimer();
   }
-  cell.isRevealed = true
-  gGame.revealedCount++
-  var elCell = getCellEl(i, j)
-  elCell.classList.add('revealed')
+  cell.isRevealed = true;
+  gGame.revealedCount++;
+  var elCell = getCellEl(i, j);
+  elCell.classList.add("revealed");
   if (cell.isMine) {
-    elCell.textContent = '💣'
-    document.getElementById('smileyBtn').textContent = '🤯'
-    gGame.isOn = false
-    revealAllMines()
-    stopTimer()
-    alert('Boom 💣')
-    return
+    elCell.textContent = "💣";
+    document.getElementById("smileyBtn").textContent = "🤯";
+    gGame.isOn = false;
+    revealAllMines();
+    stopTimer();
+    alert("Boom 💣");
+    return;
   }
-  var count = cell.minesAroundCount
-  elCell.textContent = count ? count : ''
+  var count = cell.minesAroundCount;
+  elCell.textContent = count ? count : "";
   if (count === 0) {
-    expandReveal(i, j)
+    expandReveal(i, j);
   }
-  checkGameOver()
+  checkGameOver();
 }
 
 function startTimer() {
-  if (gTimerInterval) return
-  gTimerInterval = setInterval(function() {
-    gGame.secsPassed++
-    var el = document.getElementById('time')
-    if (el) el.textContent = gGame.secsPassed
-  }, 1000)
+  if (gTimerInterval) return;
+  gTimerInterval = setInterval(function () {
+    gGame.secsPassed++;
+    var el = document.getElementById("time");
+    if (el) el.textContent = gGame.secsPassed;
+  }, 1000);
 }
 
 function stopTimer() {
-  if (!gTimerInterval) return
-  clearInterval(gTimerInterval)
-  gTimerInterval = null
+  if (!gTimerInterval) return;
+  clearInterval(gTimerInterval);
+  gTimerInterval = null;
 }

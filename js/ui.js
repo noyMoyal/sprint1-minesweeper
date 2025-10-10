@@ -71,6 +71,7 @@ function checkGameOver() {
     document.getElementById('smileyBtn').textContent = '😎'
     stopTimer()
     alert('You win!')
+    
   }
 }
 
